@@ -3,7 +3,7 @@
 import { Chess } from './chess.js';
 import { Engine } from './engine.js';
 import { fetchChessComGame, loadPgnGame, fetchPlayerGames } from './chesscom.js';
-import { CLASS, cpToWin, moveAccuracy, materialWhiteMinusBlack, classifyMove, analyzeOpenings, MATE_CP } from './analysis.js';
+import { CLASS, cpToWin, moveAccuracy, materialWhiteMinusBlack, classifyMove, analyzeOpenings, MATE_CP, effectiveLoss, aggregateAccuracy } from './analysis.js';
 import { PIECES } from './pieces.js';
 import { describeOpening } from './openings-info.js';
 import { initLang, getLang, setLang, t, applyI18n, LANGS } from './i18n.js';
@@ -407,9 +407,8 @@ function generateReason(i, moverWhite) {
 function renderSummary() {
   const wA = [], bA = [];
   for (let i = 0; i < accuracies.length; i++) { if (accuracies[i] == null) continue; (i % 2 === 0 ? wA : bA).push(accuracies[i]); }
-  const avg = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
-  $('accW').textContent = wA.length ? avg(wA).toFixed(1) : '—';
-  $('accB').textContent = bA.length ? avg(bA).toFixed(1) : '—';
+  $('accW').textContent = wA.length ? aggregateAccuracy(wA).toFixed(1) : '—';
+  $('accB').textContent = bA.length ? aggregateAccuracy(bA).toFixed(1) : '—';
   $('accWhoW').textContent = game.meta.white;
   $('accWhoB').textContent = game.meta.black;
 
@@ -484,7 +483,7 @@ function renderCritical() {
 function buildShareData() {
   const wA = [], bA = [];
   for (let i = 0; i < accuracies.length; i++) { if (accuracies[i] == null) continue; (i % 2 === 0 ? wA : bA).push(accuracies[i]); }
-  const avg = (a) => (a.length ? +(a.reduce((x, y) => x + y, 0) / a.length).toFixed(1) : null);
+  const avg = (a) => (a.length ? +aggregateAccuracy(a).toFixed(1) : null);
   const order = ['brilliant', 'great', 'best', 'excellent', 'good', 'book', 'forced', 'inaccuracy', 'mistake', 'miss', 'blunder'];
   const cw = {}, cb = {}; order.forEach((k) => { cw[k] = 0; cb[k] = 0; });
   for (let i = 0; i < classifications.length; i++) { const k = classifications[i]; if (!k) continue; (i % 2 === 0 ? cw : cb)[k]++; }
@@ -596,8 +595,9 @@ function classifyAt(i) {
   let pv2WinBefore = null;
   if (before.pv2) { const pv2Mover = moverWhite ? before.pv2.cpWhite : -before.pv2.cpWhite; pv2WinBefore = cpToWin(pv2Mover); }
   const sacAmount = isBest ? sacrificeAmount(i, moverWhite) : 0;
-  const cls = classifyMove({ isBest, sacAmount, winBefore, winAfter, pv2WinBefore, afterCpMover: afterMover });
-  const acc = moveAccuracy(Math.max(0, winBefore - winAfter));
+  const L = effectiveLoss({ winBefore, winAfter, bestCpMover: bestMover, afterCpMover: afterMover });
+  const cls = classifyMove({ isBest, sacAmount, winBefore, winAfter, pv2WinBefore, afterCpMover: afterMover, bestCpMover: bestMover, loss: L });
+  const acc = moveAccuracy(L);
   return { cls, acc };
 }
 
@@ -808,3 +808,9 @@ setMode('user');
 populateLangSel();
 applyI18n();
 $('depthNote').textContent = t(DEPTH_NOTE_KEY[depthLevel]);
+
+// PWA: register the service worker (offline + installable). Relative path so it
+// works whether the app is served from the domain root or a subfolder.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}

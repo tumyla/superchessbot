@@ -98,7 +98,7 @@ const STR = {
     simpleMode: 'Simple mode — mistakes only', sideAll: 'Both', sideWhite: 'White', sideBlack: 'Black', simpleEmpty: 'No clear mistakes on this side 👍',
     openingTitle: 'Opening', openingUnknown: 'No short note found for this opening.',
     shareBtn: '📷 Create image', shareTitle: 'Shareable card', sharing: 'Preparing image…', shareSaved: 'You can download or share the image.', shareError: 'Could not create the image.',
-    shareAccuracy: 'Accuracy', shareMoves: 'moves', shareFooter: 'Reviewed with ŞahAnaliz', shareBtnSave: 'Download', shareBtnShare: 'Share', shareBtnClose: 'Close',
+    shareAccuracy: 'Accuracy', shareMoves: 'moves', shareFooter: 'Reviewed with ŞahAnalyze', shareBtnSave: 'Download', shareBtnShare: 'Share', shareBtnClose: 'Close',
     langLabel: 'Language',
     errNeedUrl: 'Paste a game link first.', errNeedPgn: 'Paste the PGN text first.', errNeedUser: 'Type a chess.com username first.',
     errFetchFail: 'Could not fetch the game.', errPgnFail: 'Could not read the PGN. Make sure it is a complete, valid PGN.', errSampleFail: 'Could not load the sample.',
@@ -146,7 +146,7 @@ const STR = {
     simpleMode: 'Einfacher Modus — nur Fehler', sideAll: 'Beide', sideWhite: 'Weiß', sideBlack: 'Schwarz', simpleEmpty: 'Keine klaren Fehler auf dieser Seite 👍',
     openingTitle: 'Eröffnung', openingUnknown: 'Keine kurze Notiz für diese Eröffnung gefunden.',
     shareBtn: '📷 Bild erstellen', shareTitle: 'Teilbare Karte', sharing: 'Bild wird erstellt…', shareSaved: 'Du kannst das Bild herunterladen oder teilen.', shareError: 'Bild konnte nicht erstellt werden.',
-    shareAccuracy: 'Genauigkeit', shareMoves: 'Züge', shareFooter: 'Analysiert mit ŞahAnaliz', shareBtnSave: 'Herunterladen', shareBtnShare: 'Teilen', shareBtnClose: 'Schließen',
+    shareAccuracy: 'Genauigkeit', shareMoves: 'Züge', shareFooter: 'Analysiert mit ŞahAnalyse', shareBtnSave: 'Herunterladen', shareBtnShare: 'Teilen', shareBtnClose: 'Schließen',
     langLabel: 'Sprache',
     errNeedUrl: 'Füge zuerst einen Partielink ein.', errNeedPgn: 'Füge zuerst den PGN-Text ein.', errNeedUser: 'Gib zuerst einen chess.com-Benutzernamen ein.',
     errFetchFail: 'Partie konnte nicht geladen werden.', errPgnFail: 'PGN konnte nicht gelesen werden. Stelle sicher, dass es vollständig und gültig ist.', errSampleFail: 'Beispiel konnte nicht geladen werden.',
@@ -194,7 +194,7 @@ const STR = {
     simpleMode: 'Mode simple — erreurs seulement', sideAll: 'Les deux', sideWhite: 'Blancs', sideBlack: 'Noirs', simpleEmpty: 'Pas d\u2019erreur nette de ce côté 👍',
     openingTitle: 'Ouverture', openingUnknown: 'Aucune note courte trouvée pour cette ouverture.',
     shareBtn: '📷 Créer une image', shareTitle: 'Carte à partager', sharing: 'Préparation de l\u2019image…', shareSaved: 'Tu peux télécharger ou partager l\u2019image.', shareError: 'Impossible de créer l\u2019image.',
-    shareAccuracy: 'Précision', shareMoves: 'coups', shareFooter: 'Analysé avec ŞahAnaliz', shareBtnSave: 'Télécharger', shareBtnShare: 'Partager', shareBtnClose: 'Fermer',
+    shareAccuracy: 'Précision', shareMoves: 'coups', shareFooter: 'Analysé avec ŞahAnalyse', shareBtnSave: 'Télécharger', shareBtnShare: 'Partager', shareBtnClose: 'Fermer',
     langLabel: 'Langue',
     errNeedUrl: 'Colle d\u2019abord un lien de partie.', errNeedPgn: 'Colle d\u2019abord le texte PGN.', errNeedUser: 'Saisis d\u2019abord un nom chess.com.',
     errFetchFail: 'Impossible de récupérer la partie.', errPgnFail: 'Impossible de lire le PGN. Vérifie qu\u2019il est complet et valide.', errSampleFail: 'Impossible de charger l\u2019exemple.',
@@ -242,7 +242,7 @@ const STR = {
     simpleMode: 'Modo simple — solo errores', sideAll: 'Ambos', sideWhite: 'Blancas', sideBlack: 'Negras', simpleEmpty: 'Sin errores claros en este lado 👍',
     openingTitle: 'Apertura', openingUnknown: 'No se encontró una nota breve para esta apertura.',
     shareBtn: '📷 Crear imagen', shareTitle: 'Tarjeta para compartir', sharing: 'Preparando la imagen…', shareSaved: 'Puedes descargar o compartir la imagen.', shareError: 'No se pudo crear la imagen.',
-    shareAccuracy: 'Precisión', shareMoves: 'jugadas', shareFooter: 'Analizado con ŞahAnaliz', shareBtnSave: 'Descargar', shareBtnShare: 'Compartir', shareBtnClose: 'Cerrar',
+    shareAccuracy: 'Precisión', shareMoves: 'jugadas', shareFooter: 'Analizado con ŞahAnálisis', shareBtnSave: 'Descargar', shareBtnShare: 'Compartir', shareBtnClose: 'Cerrar',
     langLabel: 'Idioma',
     errNeedUrl: 'Pega primero un enlace de partida.', errNeedPgn: 'Pega primero el texto PGN.', errNeedUser: 'Escribe primero un usuario de chess.com.',
     errFetchFail: 'No se pudo obtener la partida.', errPgnFail: 'No se pudo leer el PGN. Asegúrate de que sea completo y válido.', errSampleFail: 'No se pudo cargar el ejemplo.',
@@ -290,6 +290,10 @@ const EXTRA = {
   },
 };
 for (const l in EXTRA) Object.assign(STR[l], EXTRA[l]);
+
+// Brand: "Şah" stays constant, the suffix is localized (ŞahAnaliz / ŞahAnalyze / ...).
+const BRAND_SUFFIX = { tr: 'Analiz', en: 'Analyze', de: 'Analyse', fr: 'Analyse', es: 'Análisis' };
+for (const l in BRAND_SUFFIX) STR[l].brandSuffix = BRAND_SUFFIX[l];
 
 let LANG = 'tr';
 
