@@ -4,7 +4,7 @@
 //   - big immutable binaries   -> cache-first (instant, offline): engine + openings
 //   - cross-origin (fonts)     -> stale-while-revalidate
 // Bump VERSION to force a full refresh of the precache.
-const VERSION = 'sahanaliz-v1';
+const VERSION = 'sahanaliz-v2';
 
 const CORE = [
   './', './index.html', './styles.css', './app.js',
@@ -20,7 +20,11 @@ const IMMUTABLE = ['stockfish.js', 'stockfish.wasm', 'openings.js', 'chess.js'];
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(VERSION)
-      .then((c) => c.addAll(CORE))
+      // fetch with {cache:'reload'} so the precache always pulls fresh files,
+      // never whatever the HTTP cache happens to hold.
+      .then((c) => Promise.all(CORE.map((u) =>
+        fetch(u, { cache: 'reload' }).then((r) => { if (r && r.ok) return c.put(u, r); }).catch(() => {})
+      )))
       .then(() => self.skipWaiting())
       .catch(() => self.skipWaiting())
   );
@@ -70,9 +74,11 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // navigations + app code -> network-first (stay fresh), fallback to cache
+  // navigations + app code -> network-first (stay fresh), fallback to cache.
+  // {cache:'no-cache'} revalidates with the server so a stale HTTP cache entry
+  // can never shadow a freshly deployed file.
   e.respondWith(
-    fetch(req).then((res) => {
+    fetch(req, { cache: 'no-cache' }).then((res) => {
       const copy = res.clone();
       caches.open(VERSION).then((c) => c.put(req, copy));
       return res;
